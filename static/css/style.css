@@ -1,0 +1,8 @@
+* {
+  box-sizing: border-box;
+}
+
+.img-background-formatter {
+  background-size: contain;
+  /* height: 100%; */
+}
