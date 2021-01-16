@@ -1,45 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-</head>
-<body>
+  <head>
     <script>
+      let HOST = 'ws://localhost:3456';
+      let ws = new WebSocket(HOST);
+      let el;
 
-    var wsFactory = { tryCount: 7,
-        connect : function(url){
-            var ctx = this,
-                ws  = new WebSocket(url);
-
-            return new Promise(function(v,x){
-                ws.onerror   = e => { console.log(`WS connection attempt ${4-ctx.tryCount} -> Unsuccessful`);
-                                        e.target.readyState === 3 && --ctx.tryCount;
-                                        if (ctx.tryCount > 0) setTimeout(() => v(ctx.connect(url)), 1000);
-                                        else x(new Error("3 unsuccessfull connection attempts"));
-                                    };
-                ws.onopen    = e => { console.log(`WS connection Status: ${e.target.readyState}`);
-                                        v(ws);
-                                    };
-                ws.onmessage = m => console.log(m.data);
-            });
-        }
-    };
-
-    wsFactory.connect("ws://localhost:5000/")
-            .then(ws => ws.send("Hey..! This is my first socket message"))
-            .catch(console.error);
-
-    // let socket = io.connect("localhost:5000");
-    // socket.on("echo", function(data) {
-    //     console.log(data);
-    // });
-
-    // socket.emit("message", {"message": "Hey!"});
-
+      ws.onmessage = (event) => {
+        el = document.getElementById('server-time');
+        el.innerHTML = 'Server time: ' + event.data;
+      };
     </script>
-</body>
+  </head>
+  <body>
+    <p id="server-time"></p>
+  </body>
 </html>
