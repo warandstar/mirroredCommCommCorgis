@@ -1,7 +1,7 @@
 # Comm Comm Corgis
 
-## Why?
- Who knows
+## Setup
+To set up the server run `./venv/bin/activate` followed by `pip3 install -r requirements.txt`
 
 ## Client
 By: Jong and Miguel
