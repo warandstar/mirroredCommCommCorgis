@@ -2,7 +2,9 @@
   box-sizing: border-box;
 }
 
-.img-background-formatter {
-  background-size: contain;
-  /* height: 100%; */
+.background-formatter {
+  background-image: url("../assets/Dock_2020.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: relative;
 }
