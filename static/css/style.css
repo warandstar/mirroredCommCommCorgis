@@ -3,6 +3,8 @@
 }
 
 .background-formatter {
+  width: 1440px;
+  height: 882px;
   background-image: url("../assets/Dock_2020.png");
   background-repeat: no-repeat;
   background-size: cover;
