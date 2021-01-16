@@ -7,11 +7,18 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)
 
-@socketio.on('joined')
-def handle_character_change(ws):
-    while not ws.closed:
-        message = ws.receive()
-        ws.send(message)
+@socketio.on('message')
+def character_change(data):
+    print('received message: ' + str(data))
+    send('hello world')
+
+@socketio.on('connect')
+def test_connect():
+    emit('my response', {'data': 'Connected'})
+
+@socketio.on('disconnect')
+def test_disconnect():
+    print('Client disconnected')
 
 if __name__ == "__main__":
-    socketio.run(app)
+    socketio.run(app, port=5000)
