@@ -25,28 +25,54 @@ const db = new sqlite3.Database(':memory:', (err) => {
 });
 
 // Set up table 
-db.serialize(() => {
-  db.run("CREATE TABLE lorem (info TEXT)");
-
-  let stmt = db.prepare("INSERT INTO lorem VALUES (?)");
-  for (var i = 0; i < 10; i++) {
-      stmt.run("Ipsum " + i);
-  }
-  stmt.finalize();
-
-  db.each("SELECT rowid AS id, info FROM lorem", function(err, row) {
-      console.log(row.id + ": " + row.info);
-  });
-});
+createTable(db);
 
 wss.on('connection', (ws) => {
   console.log('Client connected');
   ws.on('close', () => console.log('Client disconnected'));
-  ws.on('message', (msg) => console.log("Message: " + msg));
+  ws.on('message', (msg) => handleMessage(ws, msg));
 });
 
-setInterval(() => {
-  wss.clients.forEach((client) => {
-      client.send(new Date().toTimeString());
+/**
+ * Handler for messages.
+ * @param {String} msg JSON formatted request
+ */
+function handleMessage(ws, msg) {
+  data = JSON.parse(msg);
+  if (data.action) {
+    const action = data.action.toLowerCase();
+    if (action === 'chat') {
+
+    } else {
+      error(ws, msg + " is not a valid action");
+    }
+  } else {
+    error(ws, 'Please specify an action (chat, join_char, leave_char, move_char)');
+  }
+}
+
+function createTable(database) {
+  db.serialize(() => {
+    const createTableQuery = `CREATE TABLE Characters(
+      name      varchar(15),
+      x         int,
+      y         int
+    );`
+    db.run(createTableQuery);
   });
-}, 1000);
+}
+
+function broadcastToAll(msg) {
+  wss.clients.forEach((client) => {
+    client.send(msg);
+  });
+}
+
+/**
+ * Sends error as plain text in format `ERROR:` followed by msg
+ * @param {*} ws - websocket to use
+ * @param {*} msg - message to send
+ */
+function error(ws, msg) {
+  ws.send("ERROR: " + msg);
+}
