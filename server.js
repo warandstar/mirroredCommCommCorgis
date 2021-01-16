@@ -24,6 +24,7 @@ const db = new sqlite3.Database(':memory:', (err) => {
   console.log('Connected to the in-memory SQLite database');
 });
 
+// Set up table 
 db.serialize(() => {
   db.run("CREATE TABLE lorem (info TEXT)");
 
@@ -41,6 +42,7 @@ db.serialize(() => {
 wss.on('connection', (ws) => {
   console.log('Client connected');
   ws.on('close', () => console.log('Client disconnected'));
+  ws.on('message', (msg) => console.log("Message: " + msg));
 });
 
 setInterval(() => {
