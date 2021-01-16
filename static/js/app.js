@@ -1,3 +1,8 @@
+// Resources
+// https://developer.mozilla.org/en-US/docs/Games/Tutorials/2D_Breakout_game_pure_JavaScript/Paddle_and_keyboard_controls
+// https://www.nashvail.me/blog/canvas-image
+// https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage
+
 var canvas = document.getElementById("myCanvas");
 var ctx = canvas.getContext("2d");
 
@@ -6,13 +11,7 @@ var CHARACTER_HEIGHT = 39;
 
 var charX = 300;
 var charY = 300;
-
 var characterX = (canvas.width - CHARACTER_WIDTH) / 2;
-// const character = new Image();
-// character.src = "./assets/penguin-blue.jpg";
-// character.onload = () => {
-//   ctx.drawImage(character, 100, 300, CHARACTER_WIDTH, CHARACTER_HEIGHT);
-// };
 
 function drawChar() {
   const character = new Image();
