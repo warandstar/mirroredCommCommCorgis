@@ -1,7 +1,10 @@
 # Comm Comm Corgis
 
 ## Setup
-To set up the server run `./venv/bin/activate` followed by `pip3 install -r requirements.txt`
+To set up the server run the following:
+
+* `npm install`
+* `node server.js`
 
 ## Client
 By: Jong and Miguel
@@ -18,7 +21,7 @@ When server sends info, update position of other players.
 
 ## Server
 By: Kevin and Sashu
-Will use Python WebSockets and (hopefully) PostgreSQL
+Will use Express.js with WebSockets and (hopefully) PostgreSQL
 
 ### Supported commands
 For the minimum viable product we want update player location
