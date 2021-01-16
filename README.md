@@ -31,6 +31,8 @@ Requests and responses will use JSON format
 
 **Request required fields**
 
+Any missing fields will result in a plain text error response.
+
 `action`: what the server should do.  Can be 'update', 'create', 'leave'.
 
 if `action` is create
@@ -43,9 +45,22 @@ if `action` is update:
 
 * `position`: position to move character to
 
-if `action` is 'leave`
+if `action` is leave
 
 * `name`: name of character leaving
+
+if `action` is chat
+
+* `user`: name of current player
+* `text`: body of message
+
+**Response format**
+
+The response will be JSON formatted contain an `action` field.
+
+if `action` is chat
+* `user`: name of message sender
+* `text`: body of message
 
 # Goals
 

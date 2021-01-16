@@ -35,14 +35,14 @@ wss.on('connection', (ws) => {
 
 /**
  * Handler for messages.
- * @param {String} msg JSON formatted request
+ * @param {String} msg - JSON formatted request
  */
 function handleMessage(ws, msg) {
   data = JSON.parse(msg);
   if (data.action) {
     const action = data.action.toLowerCase();
     if (action === 'chat') {
-
+      handleChat(ws, data);
     } else {
       error(ws, msg + " is not a valid action");
     }
@@ -69,9 +69,25 @@ function broadcastToAll(msg) {
 }
 
 /**
+ * Broadcasts chat messages to everyone
+ * @param {WebSocket} ws - websocket for error responses
+ * @param {Object} data - JSON object with 'user' and 'text' field
+ */
+function handleChat(ws, data) {
+  if (data.user && data.text) {
+    result = {'action': 'chat'};
+    result.user = data.user;
+    result.text = data.text;
+    broadcastToAll(JSON.stringify(result));
+  } else {
+    error(ws, 'Chat messages must contain "user" and "text" fields.')
+  }
+}
+
+/**
  * Sends error as plain text in format `ERROR:` followed by msg
- * @param {*} ws - websocket to use
- * @param {*} msg - message to send
+ * @param {WebSocket} ws - websocket to use
+ * @param {String} msg - message to send
  */
 function error(ws, msg) {
   ws.send("ERROR: " + msg);
