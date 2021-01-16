@@ -1,4 +1,7 @@
 venv/
-bin/
 .DS_Store
 *.iml
+/bin/
+.idea/
+/__pycache__/
+*.pyc
