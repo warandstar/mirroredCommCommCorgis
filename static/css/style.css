@@ -1,0 +1,23 @@
+* {
+  box-sizing: border-box;
+}
+
+.contents {
+  display: flex;
+  justify-content: space-between;
+}
+
+.background-formatter {
+  width: 74.5%;
+  background-image: url('../assets/Dock_2020.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: relative;
+  padding-right: 5%;
+}
+
+.chat {
+  width: 24.5%;
+  border: 1px solid black;
+  border-radius: 8px;
+}
