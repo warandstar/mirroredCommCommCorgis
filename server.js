@@ -34,24 +34,145 @@ wss.on('connection', (ws) => {
 });
 
 /**
- * Handler for messages.
+ * Handler for messages.  Each must have an 'action' field.
  * @param {String} msg - JSON formatted request
  */
 function handleMessage(ws, msg) {
   data = JSON.parse(msg);
   if (data.action) {
     const action = data.action.toLowerCase();
-    if (action === 'chat') {
+
+    if (action === 'chat') {              // chat messages
       handleChat(ws, data);
+    } else if (action === 'create') {     // create new character
+      handleCreateChar(ws, data);
+    } else if (action === 'leave') {      // remove character from game
+      handleLeave(ws, data);
+    } else if (action === 'update') {     // update character position
+      handleUpdateChar(ws, data);
+    } else if (action === 'list') {       // list characters
+      handleList(ws);
     } else {
       error(ws, msg + " is not a valid action");
     }
   } else {
-    error(ws, 'Please specify an action (chat, join_char, leave_char, move_char)');
+    error(ws, 'Please specify an action (chat, create, leave, update)');
   }
 }
 
-function createTable(database) {
+/**
+ * Remove character from game
+ * @param {WebSocket} ws - WebSocket for error responses
+ * @param {Object} data - must have 'name'
+ */
+function handleLeave(ws, data) {
+  if (data.name) {
+    db.serialize(() => {
+      const removeCharQuery = `
+      DELETE FROM Characters
+      WHERE name = ?;
+      `;
+      let stmt = db.prepare(removeCharQuery);
+      stmt.run(data.name);
+
+      let response = {'action': 'remove_char'};
+      response.name = data.name;
+      broadcastToAll(JSON.stringify(response));
+    });
+  } else {
+    error(ws, "Character 'name' not specified.");
+  }
+}
+
+/**
+ * Lists characters and positions
+ * @param {WebSocket} ws - WebSocket for response
+ */
+function handleList(ws) {
+  db.serialize(() => {
+    result = []
+    db.each(
+      // query
+      `
+        SELECT *
+        FROM Characters;
+      `,
+      // query params
+      [],
+      // handle each row
+      (err, row) => {
+        result.push({
+          name: row.name,
+          x: row.x,
+          y: row.y
+        });
+        console.log(row);
+      },
+      // run on completion
+      () => {
+        ws.send(JSON.stringify({list: result}));
+      }
+    );
+  });
+}
+
+/**
+ * 
+ * @param {WebSocket} ws - WebSocket for error handling
+ * @param {Object} data - must contain 'name', 'x', and 'y' fields
+ */
+function handleUpdateChar(ws, data) {
+  if (data.name && data.x && data.y) {
+    db.serialize(() => {
+      const updateCharQuery = `
+      UPDATE Characters
+      SET x = ?, y = ?
+      WHERE name = ?;
+      `;
+      let stmt = db.prepare(updateCharQuery);
+      stmt.run(data.x, data.y, data.name);
+
+      let response = {'action': 'move_char'};
+      response.name = data.name;
+      response.x = data.x;
+      response.y = data.y;
+      broadcastToAll(JSON.stringify(response));
+    });
+  } else {
+    error(ws, "Must specify 'name', 'x', and 'y'.");
+  }
+}
+
+/**
+ * Adds new character when they join the game
+ * @param {WebSocket} ws - websocket for error response
+ * @param {Object} data - object with 'name' field for user
+ */
+function handleCreateChar(ws, data) {
+  if (data.name) {
+    db.serialize(() => {
+      const createCharQuery = `
+      INSERT INTO Characters
+      VALUES (?, 0, 0);
+      `;
+      let stmt = db.prepare(createCharQuery);
+      stmt.run(data.name);
+
+      let response = {'action': 'new_char'};
+      response.name = data.name;
+      response.x = 0;
+      response.y = 0;
+      broadcastToAll(JSON.stringify(response));
+    });
+  } else {
+    error(ws, "Character 'name' not specified.");
+  }
+}
+
+/**
+ * Creates table to hold characters
+ */
+function createTable() {
   db.serialize(() => {
     const createTableQuery = `CREATE TABLE Characters(
       name      varchar(15),
@@ -62,6 +183,10 @@ function createTable(database) {
   });
 }
 
+/**
+ * Send message to all sockets
+ * @param {String} msg - message to be broadcast
+ */
 function broadcastToAll(msg) {
   wss.clients.forEach((client) => {
     client.send(msg);

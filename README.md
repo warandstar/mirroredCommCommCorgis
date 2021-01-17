@@ -29,7 +29,7 @@ For the minimum viable product we want update player location
 ### Request/Response format
 Requests and responses will use JSON format
 
-**Request required fields**
+**Client message format**
 
 Any missing fields will result in a plain text error response.
 
@@ -54,13 +54,21 @@ if `action` is chat
 * `user`: name of current player
 * `text`: body of message
 
-**Response format**
+if `action` is list
+* no required fields, server will respond with list of player locations
+
+**Server message format**
 
 The response will be JSON formatted contain an `action` field.
 
 if `action` is chat
 * `user`: name of message sender
 * `text`: body of message
+
+if `action` is new_char
+* `name`: name of new character
+* `x`: x coordinate of new character (will start at 0)
+* `y`: y coordinate of new character (will start at 0)
 
 # Goals
 
