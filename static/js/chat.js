@@ -41,8 +41,21 @@ const posts = [
   },
 ];
 
-generatePosts();
-setInputFunctionality();
+let HOST = 'ws://localhost:3456';
+let ws = new WebSocket(HOST);
+ws.onopen = (event) => {
+  ws.onmessage = (msg) => handleMessage(msg);
+  setInputFunctionality();
+};
+
+
+function handleMessage(message) {
+  console.log(message);
+  data = JSON.parse(message.data);
+  if (data.action && data.action == "chat") {
+    document.querySelector(".post-container").appendChild(createPost(data));
+  }
+}
 
 function setInputFunctionality() {
   const input = document.querySelector(".post-input input");
@@ -51,44 +64,36 @@ function setInputFunctionality() {
     postBtn.disabled = e.target.value.length === 0;
   });
   postBtn.addEventListener("click", function () {
-    makeNewPost(input.value);
-    generatePosts();
+    let datum = {
+      text: input.value,
+      user: "Miguel",
+      action: "chat"
+    };
+    // document.querySelector(".post-container").appendChild(createPost(datum));
+    ws.send(JSON.stringify(datum));
   });
-}
-
-function makeNewPost(content) {
-  const newPost = {
-    id: "post" + posts.length,
-    userId: currentUser.id,
-    content: content,
-  };
-  posts.push(newPost);
-
-  document.getElementById("post-count").textContent =
-    parseInt(document.getElementById("post-count").textContent) + 1;
 }
 
 function createPost(info) {
   let postContainer = document.createElement("div");
-  const userInfo = users[info.userId];
 
   postContainer.innerHTML =
     `<div class="post">` +
     `<div class="post-content">` +
-    `<p class="bold">${userInfo.name}</p>` +
-    `<p>${info.content}</p>` +
+    `<p class="bold">${info.user}</p>` +
+    `<p>${info.text}</p>` +
     `</div>`;
 
   return postContainer;
 }
 
-function generatePosts() {
-  const postsContainer = document.querySelector(".post-container");
-  postsContainer.innerHTML = ""; // clears post container
+// function generatePosts() {
+//   const postsContainer = document.querySelector(".post-container");
+//   postsContainer.innerHTML = ""; // clears post container
 
-  posts.forEach(function (post) {
-    const postElement = createPost(post);
-    postsContainer.appendChild(postElement);
-  });
-}
+//   posts.forEach(function (post) {
+//     const postElement = createPost(post);
+//     postsContainer.appendChild(postElement);
+//   });
+// }
 //by elisa!!!!!
