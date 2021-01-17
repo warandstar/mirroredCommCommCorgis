@@ -83,7 +83,7 @@ function createPost(info) {
 }
 
 function generatePosts() {
-  const postsContainer = document.querySelector(".posts");
+  const postsContainer = document.querySelector(".post-container");
   postsContainer.innerHTML = ""; // clears post container
 
   posts.forEach(function (post) {
@@ -91,3 +91,4 @@ function generatePosts() {
     postsContainer.appendChild(postElement);
   });
 }
+//by elisa!!!!!
