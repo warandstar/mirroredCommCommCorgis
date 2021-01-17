@@ -6,7 +6,7 @@ var currentPosition = document.querySelector('.character');
 var cursorX;
 var cursorY;
 
-var charLength = 40;
+var charLength = 120;
 
 document.getElementById('myCanvas').onclick = (event) => { 
     cursorX = event.clientX; 

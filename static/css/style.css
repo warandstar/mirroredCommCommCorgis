@@ -1,6 +1,6 @@
 * {
   box-sizing: border-box;
-  font-family: "Courier New", Courier, monospace;
+  font-family: 'Courier New', Courier, monospace;
 }
 
 .contents {
@@ -11,7 +11,7 @@
 .background-formatter {
   width: 74.5vw;
   height: 90vh;
-  background-image: url("../assets/Dock_2020.png");
+  background-image: url('../assets/oasiss.jpg');
   background-repeat: no-repeat;
   background-size: cover;
   position: relative;
@@ -21,8 +21,8 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 40px;
-  height: 40px;
+  width: 120px;
+  height: 120px;
   transition: all 1s ease;
 }
 
