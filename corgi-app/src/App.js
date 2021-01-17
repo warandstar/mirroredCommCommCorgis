@@ -1,12 +1,13 @@
+import React from 'react';
 import './App.css';
+import Character from './Character'
+import Canvas from './Canvas'
 
 function App() {
+  var charLength = 40;
   return (
     <div class="contents">
-      <div id="myCanvas" class="background-formatter">
-        <img src="./assets/penguin-blue.jpg" class="character" alt = "character-align" />
-      </div>
-      <div class="chat">chat</div>
+      <Canvas charLength = {charLength}/>
     </div>
   );
 }

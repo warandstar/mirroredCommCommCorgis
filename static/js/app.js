@@ -3,16 +3,13 @@
 // - mouse is clicked (function started by onClick)
 
 var currentPosition = document.querySelector('.character');
-var rect = currentPosition.getBoundingClientRect();
-var currentX = rect.x;
-var currentY = rect.y;
 var cursorX;
 var cursorY;
 
 var charLength = 40;
 
-document.getElementById('myCanvas').onclick = (event) => {
-    cursorX = event.clientX;
+document.getElementById('myCanvas').onclick = (event) => { 
+    cursorX = event.clientX; 
     cursorY = event.clientY;
 
     // console.log(cursorX);
